@@ -25,7 +25,7 @@ export class ValueRow extends React.Component {
         newState.values.total = margin * units;
         newState.values.margin = margin;
 
-        this.props.onValueChange(self.item, newState.values.total);
+        this.props.onValueChange(this.state.item, newState.values.total);
         this.setState(newState);
     }
     

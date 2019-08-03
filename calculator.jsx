@@ -33,7 +33,6 @@ export class Calculator extends React.Component {
 
     onValueChange(name, item, value) {
         var newState = {values: Object.assign({}, this.state.values)};
-        console.log(name, item);
         newState.values[name][item] = value;
         newState.total = Object.values(newState.values).reduce(
             (a1, rowValues) => Object.values(rowValues).reduce(
