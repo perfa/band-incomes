@@ -2,7 +2,7 @@ import React from 'react';
 import { dollarString } from './utilities.js';
 
 
-export class ValueRow extends React.Component {
+export class UnitSalesRow extends React.Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);

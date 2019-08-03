@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ValueRow } from './valuerow.jsx';
+import { UnitSalesRow } from './unitsalesrow.jsx';
 
 import { newName } from './utilities.js';
 
@@ -13,7 +13,7 @@ export class CategoryTable extends React.Component {
             values: props.values,
             renaming: true
         };
-
+        this.headings = ['Cost', 'Price', 'Margin', 'Units Sold', 'Earnings']
         this.addRow = this.addRow.bind(this);
         this.onRename = this.onRename.bind(this);
         this.rename = this.rename.bind(this);
@@ -60,16 +60,12 @@ export class CategoryTable extends React.Component {
                             <span onClick={this.rename}>{this.state.name}</span>
                             }
                         </th>
-                        <th scope="col">Cost</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Margin</th>
-                        <th scope="col">Units Sold</th>
-                        <th scope="col">Earnings</th>
+                        {this.headings.map(hdg => <th key={hdg} scope="col">{hdg}</th>)}
                     </tr>
                 </thead>
                 <tbody>
                     {this.state.values.map(item => {
-                        return <ValueRow key={item} item={item} onValueChange={(item, e) => this.props.onValueChange(this.state.name, item, e)}></ValueRow>;
+                        return <UnitSalesRow key={item} item={item} onValueChange={(item, e) => this.props.onValueChange(this.state.name, item, e)}></UnitSalesRow>;
                     })}
                 </tbody>
             </table>
