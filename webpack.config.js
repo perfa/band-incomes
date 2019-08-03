@@ -6,6 +6,7 @@ const { HotModuleReplacementPlugin } = require('webpack');
 module.exports = {
     mode: 'development',
     entry: join(__dirname, 'app.jsx'),
+    devtool: 'source-map',
     output: {
         path: join(__dirname, 'build'),
         filename: 'app.bundled.js'
@@ -31,6 +32,13 @@ module.exports = {
                     'style-loader',
                     'css-loader',
                     'sass-loader'
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
                 ]
             }
         ]

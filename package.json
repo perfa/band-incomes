@@ -26,6 +26,11 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "eslint": "^6.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }
