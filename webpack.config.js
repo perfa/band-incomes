@@ -9,7 +9,8 @@ module.exports = {
     devtool: 'source-map',
     output: {
         path: join(__dirname, 'build'),
-        filename: 'app.bundled.js'
+        filename: 'app.bundled.js',
+        devtoolLineToLine: true
     },
     devServer: {
         port: 5000,

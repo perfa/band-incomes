@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { UnitSalesRow } from './unitsalesrow.jsx';
+import { UnitSalesRow, StreamsRow } from './unitsalesrow.jsx';
 
 
 export class CategoryTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            renaming: true,
+            renaming: props.table.renaming,
         };
         this.headings = ['Cost', 'Price', 'Margin', 'Units Sold', 'Earnings']
         this.addRow = this.addRow.bind(this);
@@ -16,6 +16,7 @@ export class CategoryTable extends React.Component {
         this.onRemove = this.onRemove.bind(this);
         this.rename = this.rename.bind(this);
         this.finishRename = this.finishRename.bind(this);
+        this.rowFor = this.rowFor.bind(this);
     }
 
     addRow(event) {
@@ -55,6 +56,10 @@ export class CategoryTable extends React.Component {
         this.setState({renaming: true});
     }
 
+    rowFor(row) {
+        return <UnitSalesRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></UnitSalesRow>;
+    }
+
     render() {
         return (
             <div key={this.props.table.name} className="tablecontainer">
@@ -76,7 +81,7 @@ export class CategoryTable extends React.Component {
                 </thead>
                 <tbody>
                     {this.props.table.rows.map(row => {
-                        return <UnitSalesRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></UnitSalesRow>;
+                        return this.rowFor(row);
                     })}
                 </tbody>
             </table>
@@ -85,5 +90,17 @@ export class CategoryTable extends React.Component {
             </div>
         </div>
         );
+    }
+}
+
+
+export class StreamsTable extends CategoryTable {
+    constructor(props) {
+        super(props);
+        this.headings = ['Streams', 'Rate', 'Earnings'];
+    }
+
+    rowFor(row) {
+        return <StreamsRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></StreamsRow>;
     }
 }

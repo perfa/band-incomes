@@ -1,14 +1,16 @@
 import React from 'react';
+import Popup from 'reactjs-popup';
 
-import { CategoryTable } from './categorytable.jsx';
+import { CategoryTable, StreamsTable } from './categorytable.jsx';
 
 import { dollarString, newName } from './utilities.js';
 
 
-class RowData {
-    constructor(index, name) {
+export class RowData {
+    constructor(index, name, renaming=true) {
         this.index = index;
         this.name = name;
+        this.renaming = renaming;
         this.values = {}
     }
 
@@ -28,11 +30,13 @@ class RowData {
     }
 }
 
-class TableData {
-    constructor(index, name) {
+export class TableData {
+    constructor(index, name, type, renaming=true) {
         this.index = index;
-        this.rowIndex = 0;
         this.name = name;
+        this.type = type;
+        this.renaming = renaming;
+        this.rowIndex = 0;
         this.rows = [];
     }
 
@@ -59,8 +63,8 @@ export class Calculator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            categories: props.categories || [],
             index: 1,
-            categories: [new TableData(0, 'Apparel')],
             total: 0
         };
         this.onValueChange = this.onValueChange.bind(this);
@@ -71,12 +75,12 @@ export class Calculator extends React.Component {
         this.removeRow = this.removeRow.bind(this);
     }
 
-    addTable(event) {
+    addTable(event, type) {
         event.preventDefault();
         var index = this.state.index;
         var newState = {categories: [...this.state.categories]}
         var name = newName(newState.categories.map(t => t.name));
-        newState.categories.push(new TableData(index, name));
+        newState.categories.push(new TableData(index, name, type));
         newState.index = ++index;
         this.setState(newState);
     }
@@ -123,17 +127,34 @@ export class Calculator extends React.Component {
         this.setState(newState);
     }
 
+    tableCreator(type, close) {
+        return event => { this.addTable(event, type); close(); }
+    }
+
     render() {
         return (
             <div className="card">
                 <div className="card-header">{this.props.children}</div>
                 <div className="card-body">
                         {this.state.categories.map( table => {
-                            return <CategoryTable key={table.name} table={table} rowFuncs={{addRow: this.addRow, removeRow: this.removeRow}} tableFuncs={{removeTable: this.removeTable, renameTable: this.renameTable}} onValueChange={this.onValueChange}></CategoryTable>
+                            return React.createElement(table.type, {key: table.name, table: table, rowFuncs: {addRow: this.addRow, removeRow: this.removeRow}, tableFuncs: {removeTable: this.removeTable, renameTable: this.renameTable}, onValueChange: this.onValueChange});
                         })}
                         <div className="calc-footer">
                             <hr/>
-                            <button className="align-middle" onClick={this.addTable}>New Category</button>
+                            <Popup
+                                trigger={<button className="align-middle">New Category</button>}
+                                on="click"
+                                position="right center"
+                                closeOnDocumentClick
+                                closeOnEscape
+                                >
+                                { close =>
+                                <div className="menu">
+                                    <div className="menu-item" onClick={this.tableCreator(CategoryTable, close)}> Unit Sales</div>
+                                    <div className="menu-item" onClick={this.tableCreator(StreamsTable, close)}> Streaming </div>
+                                </div>
+                                }
+                                </Popup>
                             <div className="float-right">
                                     <span>Total:</span>
                                     <h5>${dollarString(this.state.total)}</h5>

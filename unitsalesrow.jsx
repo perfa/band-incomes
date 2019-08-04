@@ -2,13 +2,13 @@ import React from 'react';
 import { dollarString } from './utilities.js';
 
 
-export class UnitSalesRow extends React.Component {
+
+class ValueRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            renaming: true
+            renaming: props.row.renaming
         };
-        props.row.values = {cost: 0, price: 0, margin: 0, units: 0, total: 0}
 
         this.onRemove = this.onRemove.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -23,18 +23,12 @@ export class UnitSalesRow extends React.Component {
     }
 
     onChange(col, event) {
+        event.preventDefault();
         this.props.row.updateValue(col, event.target.value);
-        
-        var { price, cost, units } = this.props.row.values;
-        var margin = Math.round(100 * (price - cost)) / 100;
-        this.props.row.updateValue('total', margin * units);
-        this.props.row.updateValue('margin', margin);
-
-        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
-        this.setState();
     }
-    
+
     onRename(event) {
+        this.props.row.rename(event.target.value);
         this.setState({item: event.target.value});
     }
 
@@ -45,13 +39,31 @@ export class UnitSalesRow extends React.Component {
             }
             event.preventDefault();
         }
-
+        this.props.row.renaming = false;
+        this.props.row.rename(event.target.value);
         this.setState({item: event.target.value, renaming: false});
         return;
     }
 
     startRename() {
+        this.props.row.renaming = true;
         this.setState({renaming: true});
+    }
+}
+export class UnitSalesRow extends ValueRow {
+    constructor(props) {
+        super(props);
+        props.row.values = Object.assign({cost: 0, price: 0, margin: 0, units: 0, total: 0}, props.row.values)
+    }
+
+    onChange(col, event) {
+        super.onChange(col, event);
+        var { price, cost, units } = this.props.row.values;
+        var margin = Math.round(100 * (price - cost)) / 100;
+        this.props.row.updateValue('total', margin * units);
+        this.props.row.updateValue('margin', margin);
+
+        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
     }
 
     render() {
@@ -63,10 +75,10 @@ export class UnitSalesRow extends React.Component {
         total = dollarString(total);
 
         return (
-        <tr key={item}>
+            <tr key={item}>
             <th scope="col">
                 <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
-                {this.state.renaming 
+                {this.props.row.renaming
                 ?
                 <input type="text" className="namefield" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                 :
@@ -86,6 +98,51 @@ export class UnitSalesRow extends React.Component {
                 <input className="valuefield" type="number" name="units" min="0" step="1" defaultValue={units} onChange={e => this.onChange('units', e)}>
                 </input>
             </td>
+            <td key={`${item}total`}>${total}</td>
+        </tr>
+        );
+    }
+}
+
+
+export class StreamsRow extends ValueRow {
+    constructor(props) {
+        console.log(props.row);
+        super(props);
+        props.row.values = Object.assign({streams: 0, rate: props.rate, total: 0}, props.row.values)
+    }
+
+    onChange(col, event) {
+        super.onChange(col, event);
+
+        var { streams, rate } = this.props.row.values;
+        var total = Math.round(100 * (streams * rate)) / 100;
+        this.props.row.updateValue('total', total);
+
+        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
+    }
+
+    render() {
+        var item = this.props.row.name;
+        var { streams, rate, total } = this.props.row.values;
+        total = dollarString(total);
+
+        return (
+        <tr key={item}>
+            <th scope="col">
+                <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
+                {this.props.row.renaming
+                ?
+                <input type="text" className="namefield" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
+                :
+                <span onClick={this.startRename}>{item}</span>
+                }
+            </th>
+            <td key={`${item}streams`}>
+                <input className="valuefield" type="number" name="streams" min="0" step="1" defaultValue={streams} onChange={e => this.onChange('streams', e)}>
+                </input>
+            </td>
+            <td key={`${item}rate`}><i>(${rate})</i></td>
             <td key={`${item}total`}>${total}</td>
         </tr>
         );
