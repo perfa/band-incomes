@@ -5,28 +5,33 @@ import { dollarString } from './utilities.js';
 export class UnitSalesRow extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            renaming: true
+        };
+        props.row.values = {cost: 0, price: 0, margin: 0, units: 0, total: 0}
+
+        this.onRemove = this.onRemove.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onRename = this.onRename.bind(this);
         this.startRename = this.startRename.bind(this);
         this.finishRename = this.finishRename.bind(this);
-        this.state = {
-            renaming: true,
-            item: props.item,
-            values: {cost: 0, price: 0, margin: 0, units: 0, total: 0},
-        };
+    }
+
+    onRemove(event) {
+        event.preventDefault();
+        this.props.removeRow(this.props.row.index);
     }
 
     onChange(col, event) {
-        var newState = {values: Object.assign({}, this.state.values)};
-        newState.values[col] = event.target.value;
+        this.props.row.updateValue(col, event.target.value);
         
-        var { price, cost, units } = newState.values;
+        var { price, cost, units } = this.props.row.values;
         var margin = Math.round(100 * (price - cost)) / 100;
-        newState.values.total = margin * units;
-        newState.values.margin = margin;
+        this.props.row.updateValue('total', margin * units);
+        this.props.row.updateValue('margin', margin);
 
-        this.props.onValueChange(this.state.item, newState.values.total);
-        this.setState(newState);
+        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
+        this.setState();
     }
     
     onRename(event) {
@@ -50,8 +55,8 @@ export class UnitSalesRow extends React.Component {
     }
 
     render() {
-        var item = this.state.item;
-        var { cost, price, margin, units, total } = this.state.values;
+        var item = this.props.row.name;
+        var { cost, price, margin, units, total } = this.props.row.values;
         margin = dollarString(margin);
         cost = dollarString(cost);
         price = dollarString(price);
@@ -60,9 +65,10 @@ export class UnitSalesRow extends React.Component {
         return (
         <tr key={item}>
             <th scope="col">
+                <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
                 {this.state.renaming 
                 ?
-                <input type="text" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
+                <input type="text" className="namefield" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                 :
                 <span onClick={this.startRename}>{item}</span>
                 }

@@ -2,32 +2,40 @@ import React from 'react';
 
 import { UnitSalesRow } from './unitsalesrow.jsx';
 
-import { newName } from './utilities.js';
-
 
 export class CategoryTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: props.name,
-            values: props.values,
-            renaming: true
+            renaming: true,
         };
         this.headings = ['Cost', 'Price', 'Margin', 'Units Sold', 'Earnings']
         this.addRow = this.addRow.bind(this);
+        this.removeRow = this.removeRow.bind(this);
         this.onRename = this.onRename.bind(this);
+        this.onRemove = this.onRemove.bind(this);
         this.rename = this.rename.bind(this);
         this.finishRename = this.finishRename.bind(this);
     }
 
     addRow(event) {
         event.preventDefault();
-        this.state.values.push(newName(this.state.values));
-        this.setState(this.state);
+        this.props.rowFuncs.addRow(this.props.table.index);
+    }
+
+    removeRow(index) {
+        this.props.rowFuncs.removeRow(this.props.table.index, index);
+        this.forceUpdate();
     }
 
     onRename(event) {
         this.setState({name: event.target.value});
+        this.props.tableFuncs.renameTable(this.props.table.index, event.target.value);
+    }
+
+    onRemove(event) {
+        event.preventDefault();
+        this.props.tableFuncs.removeTable(this.props.table.index);
     }
 
     finishRename(event) {
@@ -37,9 +45,10 @@ export class CategoryTable extends React.Component {
             }
             event.preventDefault();
         }
-
-        this.setState({name: event.target.value, renaming: false});
-        return;
+        // Should effectively always be the same value, see onRename above
+        var newName = event.target.value;
+        this.setState({name: newName, renaming: false});
+        this.props.tableFuncs.renameTable(this.props.table.index, newName);
     }
 
     rename() {
@@ -48,24 +57,26 @@ export class CategoryTable extends React.Component {
 
     render() {
         return (
-            <div key={this.state.name} className="tablecontainer">
+            <div key={this.props.table.name} className="tablecontainer">
             <table className="table">
                 <thead>
                     <tr>
-                        <th className="tablename" scope="col">{
+                        <th className="tablename" scope="col">
+                            <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
+                            {
                             this.state.renaming
                             ?
-                            <input type="text" value={this.state.name} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
+                            <input type="text" value={this.props.table.name} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                             :
-                            <span onClick={this.rename}>{this.state.name}</span>
+                            <span onClick={this.rename}>{this.props.table.name}</span>
                             }
                         </th>
                         {this.headings.map(hdg => <th key={hdg} scope="col">{hdg}</th>)}
                     </tr>
                 </thead>
                 <tbody>
-                    {this.state.values.map(item => {
-                        return <UnitSalesRow key={item} item={item} onValueChange={(item, e) => this.props.onValueChange(this.state.name, item, e)}></UnitSalesRow>;
+                    {this.props.table.rows.map(row => {
+                        return <UnitSalesRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></UnitSalesRow>;
                     })}
                 </tbody>
             </table>
