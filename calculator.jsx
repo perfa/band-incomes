@@ -156,8 +156,8 @@ export class Calculator extends React.Component {
                                 }
                                 </Popup>
                             <div className="float-right">
-                                    <span>Total:</span>
-                                    <h5>${dollarString(this.state.total)}</h5>
+                                    <span><em>Total:</em>
+                                    <h5>${dollarString(this.state.total)}</h5></span>
                             </div>
                         </div>
                 </div>

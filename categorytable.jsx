@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { UnitSalesRow, StreamsRow } from './unitsalesrow.jsx';
+import { dollarString } from './utilities.js';
 
 
 export class CategoryTable extends React.Component {
@@ -87,6 +88,10 @@ export class CategoryTable extends React.Component {
             </table>
             <div>
                 <button onClick={this.addRow}>+</button>
+                <div className="float-right">
+                    <span>Sub-Total:</span>
+                    <h5>${dollarString(this.props.table.total())}</h5>
+                </div>
             </div>
         </div>
         );
