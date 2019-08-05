@@ -87,7 +87,7 @@ export class CategoryTable extends React.Component {
                 </tbody>
             </table>
             <div>
-                <button onClick={this.addRow}>+</button>
+                <button className="add-button" onClick={this.addRow}>+</button>
                 <div className="float-right">
                     <span>Sub-Total:</span>
                     <h5>${dollarString(this.props.table.total())}</h5>

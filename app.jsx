@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-    console.log(TableData);
     var defaults = [
         new TableData(0, 'Apparel', CategoryTable, false),
         new TableData(1, 'Music (Physical)', CategoryTable, false),
@@ -21,13 +20,9 @@ function App() {
     defaults[2].rows[0].values.rate = 0.006
     defaults[2].rows[1].values.rate = 0.00735
     defaults[2].rows[2].values.rate = 0.01284
-    console.log(defaults[2].rows[0].values)
 
     return (
         <div>
-            <h1>
-                Hello World!
-            </h1>
             <Calculator categories={defaults}><h2>Merchandise</h2></Calculator>
         </div>
     );

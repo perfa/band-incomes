@@ -2,7 +2,6 @@ import React from 'react';
 import { dollarString } from './utilities.js';
 
 
-
 class ValueRow extends React.Component {
     constructor(props) {
         super(props);
@@ -50,6 +49,8 @@ class ValueRow extends React.Component {
         this.setState({renaming: true});
     }
 }
+
+
 export class UnitSalesRow extends ValueRow {
     constructor(props) {
         super(props);
