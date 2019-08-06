@@ -24,38 +24,38 @@ export class Calculator extends React.Component {
     addTable(event, type) {
         event.preventDefault();
         var index = this.state.index;
-        var newState = {categories: [...this.state.categories]}
-        var name = newName(newState.categories.map(t => t.name));
+        const newState = {categories: [...this.state.categories]}
+        const name = newName(newState.categories.map(t => t.name));
         newState.categories.push(new TableData(index, name, type));
         newState.index = ++index;
         this.setState(newState);
     }
 
     removeTable(index) {
-        var newState = {categories: [...this.state.categories]}
+        const newState = {categories: [...this.state.categories]}
         newState.categories = newState.categories.filter(t => t.index !== index)
         newState.total = newState.categories.reduce((acc, t) => acc + t.total(), 0);
         this.setState(newState);
     }
 
     renameTable(index, newName) {
-        var newState = {categories: [...this.state.categories]}
-        var table = newState.categories.find(t => t.index === index);
+        const newState = {categories: [...this.state.categories]}
+        const table = newState.categories.find(t => t.index === index);
         table.rename(newName);
         this.setState(newState);
     }
 
     addRow(index) {
-        var newState = {categories: [...this.state.categories]}
-        var table = newState.categories.find(t => t.index === index);
+        const newState = {categories: [...this.state.categories]}
+        const table = newState.categories.find(t => t.index === index);
         table.addRow()
 
         this.setState(newState);
     }
 
     removeRow(index, rowIndex) {
-        var newState = {categories: [...this.state.categories]}
-        var table = newState.categories.find(t => t.index === index);
+        const newState = {categories: [...this.state.categories]}
+        const table = newState.categories.find(t => t.index === index);
         table.removeRow(rowIndex);
         newState.total = newState.categories.reduce((acc, t) => acc + t.total(), 0);
 
@@ -63,9 +63,9 @@ export class Calculator extends React.Component {
     }
 
     onValueChange(index, rowIndex, value) {
-        var newState = {categories: [...this.state.categories]}
-        var table = newState.categories.find(t => t.index === index);
-        var row = table.rows.find(r => r.index === rowIndex);
+        const newState = {categories: [...this.state.categories]}
+        const table = newState.categories.find(t => t.index === index);
+        const row = table.rows.find(r => r.index === rowIndex);
         row.updateValue(value);
 
         newState.total = this.state.categories.reduce((acc, t) => acc + t.total(), 0);
