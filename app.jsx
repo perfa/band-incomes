@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { Calculator, TableData, RowData } from './calculator.jsx'
-import { UnitSalesTable, StreamsTable } from './categorytable.jsx';
+import { Calculator, TableData, RowData } from './calculator'
+import { UnitSalesTable, StreamsTable } from './categorytable';
 
 import './styles/index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';

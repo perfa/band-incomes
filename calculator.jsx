@@ -1,9 +1,9 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
 
-import { UnitSalesTable, StreamsTable } from './categorytable.jsx';
+import { UnitSalesTable, StreamsTable } from './categorytable';
 
-import { dollarString, newName } from './utilities.js';
+import { dollarString, newName } from './utilities';
 
 
 export class RowData {
