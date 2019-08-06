@@ -1,5 +1,5 @@
 import React from 'react';
-import { dollarString } from './utilities';
+import { dollarString } from '../utilities';
 
 
 class ValueRow extends React.Component {

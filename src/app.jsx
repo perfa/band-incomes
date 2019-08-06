@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { Calculator, TableData, RowData } from './calculator'
-import { UnitSalesTable, StreamsTable } from './categorytable';
+import { Calculator, UnitSalesTable, StreamsTable } from './components';
+import { TableData, RowData } from './utilities'
 
-import './styles/index.scss';
+import '../styles/index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

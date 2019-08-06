@@ -1,62 +1,8 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
 
-import { UnitSalesTable, StreamsTable } from './categorytable';
-
-import { dollarString, newName } from './utilities';
-
-
-export class RowData {
-    constructor(index, name, renaming=true) {
-        this.index = index;
-        this.name = name;
-        this.renaming = renaming;
-        this.values = {}
-    }
-
-    rename(newName) {
-        this.name = newName;
-    }
-
-    updateValue(name, value) {
-        this.values[name] = value;
-    }
-
-    total() {
-        if ('total' in this.values) {
-            return this.values.total;
-        }
-        return 0;
-    }
-}
-
-export class TableData {
-    constructor(index, name, type, renaming=true) {
-        this.index = index;
-        this.name = name;
-        this.type = type;
-        this.renaming = renaming;
-        this.rowIndex = 0;
-        this.rows = [];
-    }
-
-    rename(newName) {
-        this.name = newName;
-    }
-
-    addRow() {
-        var name = newName(this.rows.map(r => r.name));
-        this.rows.push(new RowData(this.rowIndex++, name))
-    }
-
-    removeRow(index) {
-        this.rows = this.rows.filter(r => r.index !== index);
-    }
-
-    total() {
-        return this.rows.reduce((acc, val) => acc + val.total(), 0);
-    }
-}
+import { UnitSalesTable, StreamsTable } from '.';
+import { dollarString, newName, TableData } from '../utilities';
 
 
 export class Calculator extends React.Component {

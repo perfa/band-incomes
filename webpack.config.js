@@ -5,7 +5,7 @@ const { HotModuleReplacementPlugin } = require('webpack');
 
 module.exports = {
     mode: 'development',
-    entry: join(__dirname, 'app.jsx'),
+    entry: join(__dirname, '/src/app.jsx'),
     devtool: 'source-map',
     output: {
         path: join(__dirname, 'build'),

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { UnitSalesRow, StreamsRow } from './unitsalesrow';
-import { dollarString } from './utilities';
+import { UnitSalesRow, StreamsRow } from '.';
+import { dollarString } from '../utilities';
 
 
 export class CategoryTable extends React.Component {
