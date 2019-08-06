@@ -1,7 +1,7 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
 
-import { CategoryTable, StreamsTable } from './categorytable.jsx';
+import { UnitSalesTable, StreamsTable } from './categorytable.jsx';
 
 import { dollarString, newName } from './utilities.js';
 
@@ -150,7 +150,7 @@ export class Calculator extends React.Component {
                                 >
                                 { close =>
                                 <div className="menu">
-                                    <div className="menu-item" onClick={this.tableCreator(CategoryTable, close)}> Unit Sales</div>
+                                    <div className="menu-item" onClick={this.tableCreator(UnitSalesTable, close)}> Unit Sales</div>
                                     <div className="menu-item" onClick={this.tableCreator(StreamsTable, close)}> Streaming </div>
                                 </div>
                                 }

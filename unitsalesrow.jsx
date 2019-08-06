@@ -59,27 +59,31 @@ export class UnitSalesRow extends ValueRow {
 
     onChange(col, event) {
         super.onChange(col, event);
-        var { price, cost, units } = this.props.row.values;
-        var margin = Math.round(100 * (price - cost)) / 100;
-        this.props.row.updateValue('total', margin * units);
-        this.props.row.updateValue('margin', margin);
 
-        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
+        const { row } = this.props;
+        const { price, cost, units } = row.values;
+        const  margin = Math.round(100 * (price - cost)) / 100;
+
+        row.updateValue('total', margin * units);
+        row.updateValue('margin', margin);
+
+        this.props.onValueChange(row.index, this.props.row.values.total);
     }
 
     render() {
-        var item = this.props.row.name;
-        var { cost, price, margin, units, total } = this.props.row.values;
-        margin = dollarString(margin);
-        cost = dollarString(cost);
-        price = dollarString(price);
-        total = dollarString(total);
+        const { row } = this.props;
+        const item = row.name;
+        const units = row.values.units;
+        const margin = dollarString(row.values.margin);
+        const cost = dollarString(row.values.cost);
+        const price = dollarString(row.values.price);
+        const total = dollarString(row.values.total);
 
         return (
             <tr key={item}>
             <th scope="col">
                 <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
-                {this.props.row.renaming
+                {row.renaming
                 ?
                 <input type="text" className="namefield" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                 :
@@ -110,29 +114,31 @@ export class StreamsRow extends ValueRow {
     constructor(props) {
         console.log(props.row);
         super(props);
-        props.row.values = Object.assign({streams: 0, rate: props.rate, total: 0}, props.row.values)
+        props.row.values = Object.assign({streams: 0, rate: props.rate || 0, total: 0}, props.row.values)
     }
 
     onChange(col, event) {
         super.onChange(col, event);
 
-        var { streams, rate } = this.props.row.values;
-        var total = Math.round(100 * (streams * rate)) / 100;
-        this.props.row.updateValue('total', total);
+        const { row } = this.props;
+        const { streams, rate } = row.values;
+        const total = Math.round(100 * (streams * rate)) / 100;
 
-        this.props.onValueChange(this.props.row.index, this.props.row.values.total);
+        row.updateValue('total', total);
+        this.props.onValueChange(row.index, row.values.total);
     }
 
     render() {
-        var item = this.props.row.name;
-        var { streams, rate, total } = this.props.row.values;
-        total = dollarString(total);
+        const { row } = this.props;
+        const item = row.name;
+        const { streams, rate, total } = row.values;
+        const dollartotal = dollarString(total);
 
         return (
         <tr key={item}>
             <th scope="col">
                 <button type="button" className="close" aria-label="remove"><span onClick={this.onRemove} aria-hidden="true">&times;</span></button>
-                {this.props.row.renaming
+                {row.renaming
                 ?
                 <input type="text" className="namefield" value={item} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                 :
@@ -144,7 +150,7 @@ export class StreamsRow extends ValueRow {
                 </input>
             </td>
             <td key={`${item}rate`}><i>(${rate})</i></td>
-            <td key={`${item}total`}>${total}</td>
+            <td key={`${item}total`}>${dollartotal}</td>
         </tr>
         );
     }

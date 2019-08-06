@@ -2,16 +2,16 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { Calculator, TableData, RowData } from './calculator.jsx'
-import { CategoryTable, StreamsTable } from './categorytable.jsx';
+import { UnitSalesTable, StreamsTable } from './categorytable.jsx';
 
 import './styles/index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-    var defaults = [
-        new TableData(0, 'Apparel', CategoryTable, false),
-        new TableData(1, 'Music (Physical)', CategoryTable, false),
+    const defaults = [
+        new TableData(0, 'Apparel', UnitSalesTable, false),
+        new TableData(1, 'Music (Physical)', UnitSalesTable, false),
         new TableData(2, 'Music (Streaming)', StreamsTable, false)
     ]
     defaults[0].rows = [ new RowData(0, 'T-shirts', false), new RowData(0, 'Hoodies', false), new RowData(0, 'Trucker Caps', false) ]

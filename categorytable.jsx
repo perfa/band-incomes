@@ -10,7 +10,7 @@ export class CategoryTable extends React.Component {
         this.state = {
             renaming: props.table.renaming,
         };
-        this.headings = ['Cost', 'Price', 'Margin', 'Units Sold', 'Earnings']
+        this.headings = ['To', 'Be', 'Done']
         this.addRow = this.addRow.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.onRename = this.onRename.bind(this);
@@ -58,12 +58,13 @@ export class CategoryTable extends React.Component {
     }
 
     rowFor(row) {
-        return <UnitSalesRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></UnitSalesRow>;
+        return <tr><td>{row.name}</td><td>-</td><td>-</td></tr>;
     }
 
     render() {
+        const { table } = this.props;
         return (
-            <div key={this.props.table.name} className="tablecontainer">
+            <div key={table.name} className="tablecontainer">
             <table className="table">
                 <thead>
                     <tr>
@@ -72,16 +73,16 @@ export class CategoryTable extends React.Component {
                             {
                             this.state.renaming
                             ?
-                            <input type="text" value={this.props.table.name} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
+                            <input type="text" value={table.name} onChange={this.onRename} onBlur={this.finishRename} onKeyDown={this.finishRename} autoFocus></input>
                             :
-                            <span onClick={this.rename}>{this.props.table.name}</span>
+                            <span onClick={this.rename}>{table.name}</span>
                             }
                         </th>
                         {this.headings.map(hdg => <th key={hdg} scope="col">{hdg}</th>)}
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.table.rows.map(row => {
+                    {table.rows.map(row => {
                         return this.rowFor(row);
                     })}
                 </tbody>
@@ -90,7 +91,7 @@ export class CategoryTable extends React.Component {
                 <button className="add-button" onClick={this.addRow}>+</button>
                 <div className="float-right">
                     <span>Sub-Total:</span>
-                    <h5>${dollarString(this.props.table.total())}</h5>
+                    <h5>${dollarString(table.total())}</h5>
                 </div>
             </div>
         </div>
@@ -98,6 +99,17 @@ export class CategoryTable extends React.Component {
     }
 }
 
+
+export class UnitSalesTable extends CategoryTable {
+    constructor(props) {
+        super(props);
+        this.headings = ['Cost', 'Price', 'Margin', 'Units Sold', 'Earnings']
+    }
+
+    rowFor(row) {
+        return <UnitSalesRow key={row.name} row={row} removeRow={this.removeRow} onValueChange={(rowIndex, e) => this.props.onValueChange(this.props.table.index, rowIndex, e)}></UnitSalesRow>;
+    }
+}
 
 export class StreamsTable extends CategoryTable {
     constructor(props) {
