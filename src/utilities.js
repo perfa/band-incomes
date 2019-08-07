@@ -18,26 +18,32 @@ export function newName(names) {
 }
 
 export class RowData {
-    constructor(index, name, renaming=true) {
+    constructor(index, name, renaming=true, valueupdate) {
         this.index = index;
         this.name = name;
         this.renaming = renaming;
-        this.values = {}
+        this.values = {};
+        this.valueupdate = valueupdate;
     }
 
     rename(newName) {
         this.name = newName;
+        return this;
     }
 
     updateValue(name, value) {
+        if(this.valueupdate){
+            this.valueupdate(this, name, value);
+        }
+
         this.values[name] = value;
     }
 
     total() {
-        if ('total' in this.values) {
-            return this.values.total;
+        if (!this.values.total || isNaN(this.values.total)) {
+            return 0;
         }
-        return 0;
+        return this.values.total;
     }
 }
 

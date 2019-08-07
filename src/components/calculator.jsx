@@ -62,15 +62,19 @@ export class Calculator extends React.Component {
         this.setState(newState);
     }
 
-    onValueChange(index, rowIndex, value) {
+    onValueChange(index, rowIndex, col, value) {
         const newState = {categories: [...this.state.categories]}
         const table = newState.categories.find(t => t.index === index);
         const row = table.rows.find(r => r.index === rowIndex);
-        row.updateValue(value);
-
-        newState.total = this.state.categories.reduce((acc, t) => acc + t.total(), 0);
+        row.updateValue(col, value);
+        newState.total = newState.categories.reduce((acc, t) => acc + t.total(), 0)
 
         this.setState(newState);
+    }
+
+    onNameChange(named, value) {
+        named.rename(value);
+        return named;
     }
 
     tableCreator(type, close) {
@@ -83,7 +87,19 @@ export class Calculator extends React.Component {
                 <div className="card-header">{this.props.children}</div>
                 <div className="card-body">
                         {this.state.categories.map( table => {
-                            return React.createElement(table.type, {key: table.name, table: table, rowFuncs: {addRow: this.addRow, removeRow: this.removeRow}, tableFuncs: {removeTable: this.removeTable, renameTable: this.renameTable}, onValueChange: this.onValueChange});
+                            return React.createElement(
+                                table.type,
+                                {
+                                    key: table.name,
+                                    table: table,
+                                    addRow: this.addRow,
+                                    removeRow: this.removeRow,
+                                    removeTable: this.removeTable,
+                                    renameTable: this.renameTable,
+                                    onNameChange: this.onNameChange,
+                                    onValueChange: this.onValueChange
+                                }
+                                );
                         })}
                         <div className="calc-footer">
                             <hr/>
