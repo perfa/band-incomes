@@ -32,6 +32,9 @@ button:active {
 box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
 }
 
+.card {
+    margin-bottom: 15px;
+}
 .valuefield {
     width: 75px;
 }
@@ -49,7 +52,17 @@ box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
 }
 
 .tablecontainer {
+    display: block;
+
+    margin-left: 10px;
+    margin-right:10px;
     margin-top: 5px;
+    margin-bottom: 20px;
+    padding: 3px;
+    border: 1px #666;
+    border-style: solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .add-button {
