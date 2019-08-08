@@ -131,7 +131,7 @@ export const Table = (props) => {
                 <DeleteButton id={props.id} onRemove={props.onRemoveTable}/>
                 <h2><EditableName id={props.id} name={props.name} onChange={props.onTableNameChange}/></h2>
             </div>
-            <div className="card-body">
+            <div className="card-body scrolling-wrapper-flexbox">
                 <table className="table">
                     <thead>
                         <tr>
