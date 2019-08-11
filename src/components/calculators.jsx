@@ -1,24 +1,22 @@
-import React, { useState } from 'react'
-import { dollarString, newName } from '../utilities'
+import React, { useState, useContext } from 'react'
+import Popup from 'reactjs-popup';
+
+import { MonthlyContext } from '../contexts'
+import { dollarString } from '../utilities'
 
 const selectAll = e => e.target.select();
-const inReverse = (a, b) => b < a ? -1 : b > a ? 1 : 0
-const byId = (a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0
-const spotifyRate = 0.006
-const appleRate = 0.00735
-const tidalRate = 0.012840
 
 
 export const DollarInput = (props) => (
     <span className="dollarvalue">
     <input
-            className='valuefield'
+        className='valuefield'
         type="number"
         name={props.name}
         min="0"
         step={props.fullValue ? ".00001" : "0.01"}
         defaultValue={props.fullValue ? props.value : dollarString(props.value)}
-        onChange={e => props.onChange(e.target.name, e.target.value, props.id)}
+        onChange={e => props.onChange(e.target.name, parseInt(e.target.value), props.id)}
         onFocus={selectAll}
         />
     </span>)
@@ -32,7 +30,7 @@ export const UnitInput = (props) => (
         min="0"
         step="1"
         defaultValue={props.value}
-        onChange={e => props.onChange(e.target.name, e.target.value, props.id)}
+        onChange={e => props.onChange(e.target.name, parseInt(e.target.value), props.id)}
         onFocus={selectAll}
         />
     </span>)
@@ -90,7 +88,7 @@ export const Subtotal = (props) => (
         <h5>${dollarString(props.total)}</h5>
     </div>)
 
-export const AddButton = (props) => (<button className="add-button" onClick={() => props.onAdd(props.id)}>New Item</button>)
+export const AddButton = (props) => (<button className="add-button" onClick={() => props.onAdd(props.id, props.type)}>New Item</button>)
 
 export const DeleteButton = (props) => {
     return (<button
@@ -122,18 +120,17 @@ export const Row = (props) => {
         </tr>
     )
 }
-
-export const Table = (props) => {
+export const Tables = (props) => {
+    const [state, , changeTableName, removeTable, changeRowName, addRow, removeRow, changeRowValue] = useContext(MonthlyContext);
     const headings = {
         'Product': ['Cost', 'Price', 'Margin', 'Units', 'Earnings'],
         'Streams': ['Streams', 'Rate', 'Earnings'],
     };
 
-    return (
-        <div key={props.name} className="card">
+    return state.tables.map(t => (<div key={t.name} className="card">
             <div className="card-header">
-                <DeleteButton id={props.id} onRemove={props.onRemoveTable}/>
-                <h2 style={{marginLeft: "2rem"}}><EditableName id={props.id} name={props.name} onChange={props.onTableNameChange}/></h2>
+                <DeleteButton id={t.id} onRemove={removeTable}/>
+                <h2 style={{marginLeft: "2rem"}}><EditableName id={t.id} name={t.name} onChange={changeTableName}/></h2>
             </div>
             <div className="card-body scrolling-wrapper-flexbox">
                 <table className="table" style={{clear: "both"}}>
@@ -142,30 +139,30 @@ export const Table = (props) => {
                             <th className="tablename" scope="col">
                             &nbsp;
                             </th>
-                            {headings[props.type].map(heading => (
+                            {headings[t.type].map(heading => (
                                 <th key={heading} scope='col'>{heading}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {props.rows.map(row => {
-                            if (props.type === 'Product') {
+                        {t.rows.map(row => {
+                            if (t.type === 'Product') {
                                 return (
-                                    <Row {...props} id={row.id} key={row.id} name={row.name}>
-                                        <EditableName id={row.id} name={row.name} onChange={props.onRowNameChange}/>
-                                        <DollarInput {...props} name='cost' value={row.values.cost} id={row.id} />
-                                        <DollarInput {...props} name='price' value={row.values.price} id={row.id}/>
+                                    <Row {...props} onRemoveRow={removeRow} id={row.id} key={row.id} name={row.name}>
+                                        <EditableName id={row.id} name={row.name} onChange={changeRowName}/>
+                                        <DollarInput {...props} onChange={changeRowValue} name='cost' value={row.values.cost} id={row.id} />
+                                        <DollarInput {...props} onChange={changeRowValue}  name='price' value={row.values.price} id={row.id}/>
                                         <DollarOutput {...props} name='margin' value={row.values.margin} id={row.id}/>
-                                        <UnitInput {...props} name='units' value={row.values.units} id={row.id}/>
+                                        <UnitInput {...props} onChange={changeRowValue} name='units' value={row.values.units} id={row.id}/>
                                         <DollarOutput {...props} name='total' value={row.values.total} id={row.id}/>
                                     </Row>
                                 )
                             } else /* Stream Value Row */ {
                                 return (
                                     <Row {...props} id={row.id} key={row.id} name={row.name}>
-                                        <EditableName id={row.id} name={row.name} onChange={props.onRowNameChange}/>
-                                        <UnitInput {...props} name='streams' value={row.values.streams} id={row.id}/>
-                                        <EditableValue {...props} name='rate' value={row.values.rate} id={row.id}/>
+                                        <EditableName id={row.id} name={row.name} onChange={changeRowName}/>
+                                        <UnitInput {...props} onChange={changeRowValue} name='streams' value={row.values.streams} id={row.id}/>
+                                        <EditableValue {...props} onChange={changeRowValue} name='rate' value={row.values.rate} id={row.id}/>
                                         <DollarOutput {...props} name='total' value={row.values.total} id={row.id}/>
                                     </Row>
                                 )
@@ -176,100 +173,43 @@ export const Table = (props) => {
             </div>
             <div style={{display: "block", width:"100%", padding: "5px"}}>
                 <div style={{float: "left"}}>
-                    <AddButton id={props.id} onAdd={props.onAddRow} />
+                    <AddButton id={t.id} type={t.type} onAdd={addRow} />
                 </div>
                 <div style={{float: "right"}}>
-                    <Subtotal total={props.rows.reduce((a, r) => a + r.values.total, 0)}/>
+                    <Subtotal total={t.rows.reduce((a, r) => a + r.values.total, 0)}/>
                 </div>
             </div>
+        </div>))
+}
+
+export const AddTables = () => {
+    const [, addTable] = useContext(MonthlyContext)
+
+    return (<Popup
+        trigger={<button className="align-middle">New Category</button>}
+        on="click"
+        position="right center"
+        closeOnDocumentClick
+        closeOnEscape
+        >
+        { close =>
+        <div className="menu">
+            <div className="menu-item" onClick={() => {addTable('Product'); close()}}> Unit Sales</div>
+            <div className="menu-item" onClick={() => {addTable('Streams'); close()}}> Streaming </div>
         </div>
-    )
+        }
+    </Popup>)
 }
 
-export const Example = () => {
-    const [tableName, setTableName] = useState('Apparel')
-    const [rows, setRows] = useState([
-        {id: 'table0row0', name:'T-Shirts', values: {cost: 4, price: 18, margin: 14, units: 0, total: 0}},
-        {id: 'table0row1', name:'Hoodies', values: {cost: 9, price: 25, margin: 16, units: 0, total: 0}},
-        {id: 'table0row2', name:'Caps', values: {cost: 6, price: 12, margin: 6, units: 0, total: 0}}
-    ])
-
-    const rowName = rows =>  newName(rows.map(r => r.name))
-    const rowID = rows => 'row' + (parseInt(rows.map(r => r.id).sort(inReverse)[0].slice(-1)) + 1)
-    const changeRowName = (name, id) => {
-        const row = Object.assign({},  rows.filter(r => r.id === id)[0])
-        row.name = name
-        setRows([...rows.filter(r => r.id !== id), row].sort(byId))
-    }
-    const changeRowValue = (col, val, id) => {
-        const row = Object.assign({},  rows.filter(r => r.id === id)[0])
-        row.values[col] = val
-
-        var {cost, price, margin, units, total} = row.values
-        margin = price - cost
-        total = units * margin
-
-        Object.assign(row.values, {margin: margin, total: total})
-
-        setRows([...rows.filter(r => r.id !== id), row].sort(byId))
-    }
-
+export const GrandTotal = () => {
+    const [ state ] = useContext(MonthlyContext)
+    const total = state.tables.reduce((acc, table) =>
+        acc + table.rows.reduce((racc, row) =>
+        racc + row.values.total, 0), 0)
     return (
-        <Table
-        id='table0'
-        name={tableName}
-        type='Product'
-        onRemoveTable={(...args) => console.log('onRemoveTable', args)}
-        onTableNameChange={(name) => setTableName(name)}
-        onAddRow={() => setRows([...rows, {id: rowID(rows), name: rowName(rows), values: {cost: 0, price:2, margin:2, units:0, total:0}}])}
-        onRemoveRow={(rowID) => setRows(rows.filter(r => r.id !== rowID))}
-        onRowNameChange={(name, rowID) => changeRowName(name, rowID)}
-        onChange={(col, val, id) => changeRowValue(col, val, id)}
-        rows={rows}
-    />
-    )
-}
-
-export const Example2 = () => {
-    const [tableName, setTableName] = useState('Streaming')
-    const [rows, setRows] = useState([
-        {id: 'table1row0', name:'Spotify', values: {streams: 1000, rate: spotifyRate, total: 6}},
-        {id: 'table1row1', name:'Apple Music', values: {streams: 1000, rate: appleRate, total: 7.35}},
-        {id: 'table1row2', name:'Tidal', values: {streams: 1000, rate: tidalRate, total: 12.84}}
-    ])
-
-    const rowName = rows =>  newName(rows.map(r => r.name))
-    const rowID = rows => 'row' + (parseInt(rows.map(r => r.id).sort(inReverse)[0].slice(-1)) + 1)
-    const changeRowName = (name, id) => {
-        const row = Object.assign({},  rows.filter(r => r.id === id)[0])
-        row.name = name
-        setRows([...rows.filter(r => r.id !== id), row].sort(byId))
-    }
-    const changeRowValue = (col, val, id) => {
-        console.log(col, val, id)
-        const row = Object.assign({},  rows.filter(r => r.id === id)[0])
-        row.values[col] = val
-
-        var {streams, rate, total} = row.values
-        total = streams * rate
-
-        Object.assign(row.values, {streams: streams, total: total})
-
-        setRows([...rows.filter(r => r.id !== id), row].sort(byId))
-    }
-
-    return (
-    <Table
-        id='table1'
-        name={tableName}
-        type='Streams'
-        onRemoveTable={(...args) => console.log('onRemoveTable', args)}
-        onTableNameChange={(name) => setTableName(name)}
-        onAddRow={() => setRows([...rows, {id: rowID(rows), name: rowName(rows), values: {cost: 0, price:2, margin:2, units:0, total:0}}])}
-        onRemoveRow={(rowID) => setRows(rows.filter(r => r.id !== rowID))}
-        onRowNameChange={(name, rowID) => changeRowName(name, rowID)}
-        onChange={(col, val, id) => changeRowValue(col, val, id)}
-        rows={rows}
-    />
+    <div className="float-right">
+        <span><em>Total:</em>
+        <h5>${dollarString(total)}</h5></span>
+    </div>
     )
 }
