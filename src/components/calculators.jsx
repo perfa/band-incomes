@@ -9,9 +9,10 @@ const appleRate = 0.00735
 const tidalRate = 0.012840
 
 
-export const DollarInput = (props) => (<span>$
+export const DollarInput = (props) => (
+    <span className="dollarvalue">
     <input
-        className="valuefield"
+            className='valuefield'
         type="number"
         name={props.name}
         min="0"
@@ -19,9 +20,11 @@ export const DollarInput = (props) => (<span>$
         defaultValue={props.fullValue ? props.value : dollarString(props.value)}
         onChange={e => props.onChange(e.target.name, e.target.value, props.id)}
         onFocus={selectAll}
-    /></span>)
+        />
+    </span>)
 
-export const UnitInput = (props) => (<span>
+export const UnitInput = (props) => (
+    <span>
     <input
         className="valuefield"
         type="number"
@@ -31,9 +34,10 @@ export const UnitInput = (props) => (<span>
         defaultValue={props.value}
         onChange={e => props.onChange(e.target.name, e.target.value, props.id)}
         onFocus={selectAll}
-    /></span>)
+        />
+    </span>)
 
-export const DollarOutput = (props) => <span>${dollarString(props.value)}</span>
+export const DollarOutput = (props) => <span className="dollarvalue">{dollarString(props.value)}</span>
 
 export const EditableValue = (props) => {
     const [editing, setEditing] = useState(false);
@@ -41,7 +45,7 @@ export const EditableValue = (props) => {
 
     return (editing
             ?
-            <span>$
+            <span className="dollarvalue">
                 <input
                     className="valuefield"
                     type="number"
@@ -129,10 +133,10 @@ export const Table = (props) => {
         <div key={props.name} className="card">
             <div className="card-header">
                 <DeleteButton id={props.id} onRemove={props.onRemoveTable}/>
-                <h2><EditableName id={props.id} name={props.name} onChange={props.onTableNameChange}/></h2>
+                <h2 style={{marginLeft: "2rem"}}><EditableName id={props.id} name={props.name} onChange={props.onTableNameChange}/></h2>
             </div>
             <div className="card-body scrolling-wrapper-flexbox">
-                <table className="table">
+                <table className="table" style={{clear: "both"}}>
                     <thead>
                         <tr>
                             <th className="tablename" scope="col">
@@ -167,17 +171,16 @@ export const Table = (props) => {
                                 )
                             }
                         })}
-                        <tr>
-                            <td>
-                                <AddButton id={props.id} onAdd={props.onAddRow} />
-                            </td>
-                            {headings[props.type].slice(0, -1).map(heading => (
-                                <td key={heading+'blank'} scope='col'>&nbsp;</td>
-                            ))}
-                            <td><Subtotal total={props.rows.reduce((a, r) => a + r.values.total, 0)}/></td>
-                        </tr>
                     </tbody>
                 </table>
+            </div>
+            <div style={{display: "block", width:"100%", padding: "5px"}}>
+                <div style={{float: "left"}}>
+                    <AddButton id={props.id} onAdd={props.onAddRow} />
+                </div>
+                <div style={{float: "right"}}>
+                    <Subtotal total={props.rows.reduce((a, r) => a + r.values.total, 0)}/>
+                </div>
             </div>
         </div>
     )

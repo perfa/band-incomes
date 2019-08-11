@@ -1,14 +1,21 @@
 $PRIMARY_COLOR : rgb(243, 103, 126);
+$table-border-width: 1px;
+$table-border-color: #666;
+
+
 html {
     box-sizing: border-box;
-  }
-  *, *:before, *:after {
+    font-size: 62.5%;
+}
+*, *:before, *:after {
     box-sizing: inherit;
-  }
+}
 
 body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-size: 1.6  em;
 
     h1 {
         text-align: center;
@@ -16,6 +23,8 @@ body {
         font-weight: 400;
     }
 }
+
+
 
 button {
     display: block;
@@ -29,21 +38,30 @@ button {
 }
 
 button:active {
-box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
+    box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
 }
+
 .scrolling-wrapper-flexbox {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
 
     table {
-      flex: 0 0 auto;
+        flex: 0 0 auto;
     }
     &::-webkit-scrollbar {
-      display: none;
+        display: none;
     }
     -webkit-overflow-scrolling: touch;
-  }
+}
+
+.tablename {
+    text-transform: uppercase;
+}
+
+.dollarvalue::before {
+    content: '$';
+}
 
 .card {
     margin-bottom: 15px;
@@ -54,10 +72,6 @@ box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
 
 .namefield {
     width: 115px;
-}
-
-.tablename {
-    text-transform: uppercase;
 }
 
 .calc-footer {
@@ -83,4 +97,8 @@ box-shadow: inset 0px 0px 80px 0px rgba(0,0,0,0.25);
     margin-left: 5px;
     margin-bottom: 5px;
     vertical-align: middle;
+}
+
+button.close {
+    float: left;
 }
